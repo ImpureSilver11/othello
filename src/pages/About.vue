@@ -1,10 +1,19 @@
 <template>
   <div>
-    <p>This is About Page.</p>
-    <router-link to="/">Go to Home page.</router-link>
+    <p>aboutPages</p>
+    <router-link to="/"></router-link>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return{
+    }
+  },
+  computed: {
+  },
+  methods: {
+  }
+}
 </script>
