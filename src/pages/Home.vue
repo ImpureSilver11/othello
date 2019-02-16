@@ -70,7 +70,7 @@ export default {
     }
 }
 </script>
-<style>
+<style lang="less">
 .cell{
   height: 50px;
   width: 50px;
