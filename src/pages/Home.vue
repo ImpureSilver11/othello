@@ -5,12 +5,16 @@
       <tr v-for="i in y" v-bind:key="i">
         <td v-for="j in x" v-bind:key="j" class="cell">
           <span v-if="table[i][j] == '黒'" class='black' >
+            {{ i }}{{ j }}
           </span >
           <span v-if="table[i][j] == '白'" class="white">
+            {{ i }}{{ j }}
           </span>
           <span v-if="table[i][j] == '黒置'" v-on:click="canput" class="Canput">
+            {{ i }}{{ j }}
           </span>
           <span v-if="table[i][j] == '空白'" class="space" >
+            {{ i }}{{ j }}
             <!-- {{ table[i][j] }} -->
           </span>
         </td>
@@ -53,9 +57,6 @@ export default {
               array_table[i][j] =  '白'
             }else{
               array_table[i][j] =  "空白"
-              // 置けるかどうか判別してarray_tableに入れとくか
-              // 自分の位置と周辺(八方向)を判別して相手コマ(白なら黒、黒なら白)がある場合
-              // その方向を調べて行って自分と同じ色がある場合はCanPut
             }
           }
         }
@@ -63,9 +64,57 @@ export default {
       canput: function () {
 
       },
-      whetherCanPut: function () {
+      whetherCanPut: function (i, j, tarn) {
+        // 自分の位置と周辺(八方向)を判別して相手コマ(白なら黒、黒なら白)がある場合
+        // その方向を調べて行って自分と同じ色がある場合はCanPut
+        var enemyColor = tarn == "黒" ? "白" : "黒"
+        // TODO: リファクタ
+        var vm = this
+        if(vm.array_table[i][j] != "空白"){
+          return false
+        }else{
+          if(i ==1){
+            if(j == 1){
+              if(vm.array_table[i][j+1] != enemyColor ||
+                 vm.array_table[i+1][j] != enemyColor ||
+                 vm.array_table[i+1][j+1] != enemyColor ){
+                return true
+              }else{
+                return false
+              }
+            }else if(j == 8){
+              if(vm.array_table[i][j-1] != enemyColor ||
+                 vm.array_table[i+1][j] != enemyColor ||
+                 vm.array_table[i+1][j-1] != enemyColor ){
+                return true
+              }else{
+                return false
+              }
+            }else{
+              if(vm.array_table[i][j+1]   != enemyColor ||
+                 vm.array_table[i][j-1]   != enemyColor ||
+                 vm.array_table[i+1][j-1] != enemyColor ||
+                 vm.array_table[i+1][j]   != enemyColor ||
+                 vm.array_table[i+1][j+1] != enemyColor ){
+                return true
+              }else{
+                return false
+              }
+            }
+          // }else if(i == 8){
+          //   if(j == 1){
+            // 飽きるわ
+
+          //   }else if(j == 8){
+
+          //   }else{
+              
+          //   }
+          }else{
+            return true
+          }
+        }
         // 置ける位置かどうか判別
-        return true
       },
       mytarn(){
       }
