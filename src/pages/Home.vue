@@ -67,57 +67,136 @@ export default {
       whetherCanPut: function (i, j, tarn) {
         // 自分の位置と周辺(八方向)を判別して相手コマ(白なら黒、黒なら白)がある場合
         // その方向を調べて行って自分と同じ色がある場合はCanPut
-        var enemyColor = tarn == "黒" ? "白" : "黒"
-        // TODO: リファクタ
-        var vm = this
-        if(vm.array_table[i][j] != "空白"){
+        if (stoneReplaceLeftTop(i, j, tarn)||
+            stoneReplaceTop(i, j ,tarn)||
+            stoneReplaceRightTop(i, j, tarn)||
+            stoneReplaceLeft(i, j, tarn)||
+            stoneReplaceRight(i, j, tarn)||
+            stoneReplaceLeftDown(i, j, tarn)||
+            stoneReplaceRightDown(i, j, tarn)){
+          return true
+        }
+        return false
+      },
+      stoneReplaceLeftTop(x, y, myStone){
+        const enemy = myStone == "黒" ? "白" : "黒"
+        // x=1 y=1
+        if( x == 1 || y == 1 || array_table[x-1][y-1] != enemy){
           return false
-        }else{
-          if(i ==1){
-            if(j == 1){
-              if(vm.array_table[i][j+1] != enemyColor ||
-                 vm.array_table[i+1][j] != enemyColor ||
-                 vm.array_table[i+1][j+1] != enemyColor ){
-                return true
-              }else{
-                return false
-              }
-            }else if(j == 8){
-              if(vm.array_table[i][j-1] != enemyColor ||
-                 vm.array_table[i+1][j] != enemyColor ||
-                 vm.array_table[i+1][j-1] != enemyColor ){
-                return true
-              }else{
-                return false
-              }
-            }else{
-              if(vm.array_table[i][j+1]   != enemyColor ||
-                 vm.array_table[i][j-1]   != enemyColor ||
-                 vm.array_table[i+1][j-1] != enemyColor ||
-                 vm.array_table[i+1][j]   != enemyColor ||
-                 vm.array_table[i+1][j+1] != enemyColor ){
-                return true
-              }else{
-                return false
-              }
-            }
-          // }else if(i == 8){
-          //   if(j == 1){
-            // 飽きるわ
-
-          //   }else if(j == 8){
-
-          //   }else{
-              
-          //   }
-          }else{
+        }
+        var i = x
+        for(var j = y ; i > 0; i--){
+          if(array_table[i][j] == myStone ){
+            return true
+          }else if(i == 1 ){
+            return false
+          }
+          i--;
+        }
+        return false
+      },
+      stoneReplaceTop(x, y ,myStone){
+        const enemy = myStone == "黒" ? "白" : "黒"
+        // x=1 y=1~8
+        if( y == 1 || array_table[x][y-1] != enemy){
+          return false
+        }
+        for(var i = y ; i > 0; i--){
+          if(array_table[x][i] == myStone ){
             return true
           }
         }
-        // 置ける位置かどうか判別
+        return false
       },
-      mytarn(){
+      stoneReplaceRightTop(x, y, myStone){
+        const enemy = myStone == "黒" ? "白": "黒"
+        // x =1 y = 8
+        if(x == 1 || y == 8 || array_table[x+1][y-1] != enemy){
+          return false
+        }
+        var i = x;
+        for(var j = y ; j<9 ; j++){
+          if(array_table[i][j] == myStone){
+            return true
+          }else if(i==1){
+            return false
+          }
+          i--;
+        }
+        return false
+      },
+      stoneReplaceLeft(x, y, myStone){
+        const enemy = myStone == "黒" ? "白" : "黒"
+        // y=1
+        if(y == 1 || array_table[x][y-1] != enemy ){
+          return false
+        }
+        for(var i = y; i>0; i--){
+          if(array_table[x][i] == myStone){
+            return true
+          }
+        }
+        return false
+      },
+      stoneReplaceRight(x, y, myStone){
+        const enemy = myStone == "黒" ? "白" : "黒"
+        // y=8
+        if(y == 8 || array_table[x][y+1] != enemy){
+          return false
+        }
+        for(var i = y; i < 9 ; i++ ){
+          if(array_table[x][i] == myStone){
+            return true
+          }
+        }
+        return false
+      },
+      stoneReplaceLeftDown(x, y, myStone){
+        const enemy = myStone == "黒" ? "白" : "黒"
+        if(x == 1 || y == 8 || array_table[x-1][y+1] != enemy ){
+          return false
+        }
+        var i = x;
+        for(var j = y ; j < 9 ; j++ ){
+          if(array_table[i][j] == myStone ){
+            return true
+          }else if(i ==1 ){
+            return false
+          }
+          i--;
+        }
+        return false
+      },
+      stoneReplaceDown(x, y, myStone){
+        const enemy = myStone == "黒" ? "白" : "黒"
+        // x = 8
+        if(x == 8 || array_table[x+1][y] != enemy){
+          return false
+        }
+        for(var i = x; i < 9; i++){
+          if(array_table[i][j] == myStone){
+            return true
+          }
+        }
+        return false
       }
+    },
+    stoneReplaceRightDown(x, y, myStone){
+      const enemy = myStone == "黒" ? "白" : "黒"
+      // x=8 y=8
+      if(x == 8 || y == 8 || array_table[x+1][y+1] != enemy ){
+        return false
+      }
+      var i = x
+      for(var j = y; j < 9 ; j++ ){
+        if(array_table[i][j] == myStone){
+          return true
+        }else if(i == 8){
+          return false
+        }
+        i++;
+      }
+      return false
     }
 }
 </script>
