@@ -5,17 +5,17 @@
       <tr v-for="i in y" v-bind:key="i">
         <td v-for="j in x" v-bind:key="j" class="cell">
           <span v-if="table[i][j] == '黒'" class='black' >
-            {{ i }}{{ j }}
+            <!-- {{ j }}{{ i }} -->
           </span >
           <span v-if="table[i][j] == '白'" class="white">
-            {{ i }}{{ j }}
+            <!-- {{ j }}{{ i }} -->
           </span>
-          <span v-if="table[i][j] == '黒置'" v-on:click="canput" class="Canput">
-            {{ i }}{{ j }}
+          <span v-if="whetherCanPut(j, i, '黒') == true && table[i][j] == '空白'" class="Canput">
+            <!-- クリックイベント追加 -->
+            <!-- {{ j }}{{ i }} -->
           </span>
-          <span v-if="table[i][j] == '空白'" class="space" >
-            {{ i }}{{ j }}
-            <!-- {{ table[i][j] }} -->
+          <span v-if="whetherCanPut(j, i, '黒') == false && table[i][j] == '空白'" class="space" >
+            <!-- {{ j }}{{ i }} -->
           </span>
         </td>
       </tr>
@@ -41,11 +41,9 @@ export default {
   },
   created: function(){
     this.isinit();
-    this.mytarn();
   },
     mounted: function(){
       this.canput();
-      this.whetherCanPut();
     },
     methods: {
       isinit() {
@@ -62,18 +60,18 @@ export default {
         }
       },
       canput: function () {
-
       },
       whetherCanPut: function (i, j, tarn) {
         // 自分の位置と周辺(八方向)を判別して相手コマ(白なら黒、黒なら白)がある場合
         // その方向を調べて行って自分と同じ色がある場合はCanPut
-        if (stoneReplaceLeftTop(i, j, tarn)||
-            stoneReplaceTop(i, j ,tarn)||
-            stoneReplaceRightTop(i, j, tarn)||
-            stoneReplaceLeft(i, j, tarn)||
-            stoneReplaceRight(i, j, tarn)||
-            stoneReplaceLeftDown(i, j, tarn)||
-            stoneReplaceRightDown(i, j, tarn)){
+        if (this.stoneReplaceLeftTop(i, j, tarn) ||
+            this.stoneReplaceTop(i, j ,tarn) ||
+            this.stoneReplaceRightTop(i, j, tarn) ||
+            this.stoneReplaceLeft(i, j, tarn) ||
+            this.stoneReplaceRight(i, j, tarn)||
+            this.stoneReplaceDown(i, j, tarn) ||
+            this.stoneReplaceLeftDown(i, j, tarn) ||
+            this.stoneReplaceRightDown(i, j, tarn) ){
           return true
         }
         return false
@@ -111,28 +109,28 @@ export default {
       stoneReplaceRightTop(x, y, myStone){
         const enemy = myStone == "黒" ? "白": "黒"
         // x =1 y = 8
-        if(x == 1 || y == 8 || array_table[x+1][y-1] != enemy){
+        if(x == 8 || y == 1 || array_table[x+1][y-1] != enemy){
           return false
         }
         var i = x;
-        for(var j = y ; j<9 ; j++){
+        for(var j = y ; j >0 ; j--){
           if(array_table[i][j] == myStone){
             return true
-          }else if(i==1){
+          }else if(i == 8){
             return false
           }
-          i--;
+          i++;
         }
         return false
       },
       stoneReplaceLeft(x, y, myStone){
         const enemy = myStone == "黒" ? "白" : "黒"
         // y=1
-        if(y == 1 || array_table[x][y-1] != enemy ){
+        if(x == 1 || array_table[x-1][y] != enemy ){
           return false
         }
-        for(var i = y; i>0; i--){
-          if(array_table[x][i] == myStone){
+        for(var i = x; i>0; i--){
+          if(array_table[i][y] == myStone){
             return true
           }
         }
@@ -141,11 +139,11 @@ export default {
       stoneReplaceRight(x, y, myStone){
         const enemy = myStone == "黒" ? "白" : "黒"
         // y=8
-        if(y == 8 || array_table[x][y+1] != enemy){
+        if(x == 8 || array_table[x+1][y] != enemy){
           return false
         }
-        for(var i = y; i < 9 ; i++ ){
-          if(array_table[x][i] == myStone){
+        for(var i = x; i < 9 ; i++ ){
+          if(array_table[i][y] == myStone){
             return true
           }
         }
@@ -170,34 +168,34 @@ export default {
       stoneReplaceDown(x, y, myStone){
         const enemy = myStone == "黒" ? "白" : "黒"
         // x = 8
-        if(x == 8 || array_table[x+1][y] != enemy){
+        if(y == 8 || array_table[x][y+1] != enemy){
           return false
         }
-        for(var i = x; i < 9; i++){
-          if(array_table[i][j] == myStone){
+        for(var i = y; i < 9; i++){
+          if(array_table[x][i] == myStone){
             return true
           }
         }
         return false
-      }
-    },
-    stoneReplaceRightDown(x, y, myStone){
-      const enemy = myStone == "黒" ? "白" : "黒"
-      // x=8 y=8
-      if(x == 8 || y == 8 || array_table[x+1][y+1] != enemy ){
-        return false
-      }
-      var i = x
-      for(var j = y; j < 9 ; j++ ){
-        if(array_table[i][j] == myStone){
-          return true
-        }else if(i == 8){
+      },
+      stoneReplaceRightDown(x, y, myStone){
+        const enemy = myStone == "黒" ? "白" : "黒"
+        // x=8 y=8
+        if(x == 8 || y == 8 || array_table[x+1][y+1] != enemy ){
           return false
         }
-        i++;
+        var i = x;
+        for(var j = y ; j < 9 ; j++ ){
+          if(array_table[i][j] == myStone){
+            return true
+          }else if(i == 8){
+            return false
+          }
+          i++;
+        }
+        return false
       }
-      return false
-    }
+  }
 }
 </script>
 <style lang="less">
@@ -225,10 +223,11 @@ export default {
   border-radius: 50%;
 }
 .Canput{
+  // TODO: それっぽい色にしたい
   background-color:wheat;
   display: inline-block;
-  /* height: 45px; */
-  /* width: 45px; */
+  height: 45px;
+  width: 45px;
   border-radius: 50%;
 }
 </style>
